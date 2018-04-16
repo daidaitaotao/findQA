@@ -54,12 +54,11 @@ class TesterSQLDAO(object):
             query = base_query + ' ' + where_clause + ' ' + group_by_clause
         else:
             query = base_query + ' ' + group_by_clause
-        print(query)
 
         cursor = connection.cursor()
         cursor.execute(query)
         rows = TesterSQLDAO.dictfetchall(cursor)
-        print(rows)
+
         return rows
 
     @staticmethod
