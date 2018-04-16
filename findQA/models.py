@@ -23,7 +23,7 @@ class Tester(models.Model):
     tester_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    lastLogin = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(auto_now_add=True)
     country = models.ForeignKey(Country, db_column='country_code', on_delete=models.PROTECT)
 
     class Meta:
@@ -32,14 +32,17 @@ class Tester(models.Model):
 
 class Bug(models.Model):
     bug_id = models.AutoField(primary_key=True)
-    tester_id = models.ForeignKey(Tester, db_column='tester_id', on_delete=models.PROTECT)
-    device_id = models.ForeignKey(Device, db_column='device_id', on_delete=models.PROTECT)
+    tester = models.ForeignKey(Tester, db_column='tester_id', on_delete=models.PROTECT)
+    device = models.ForeignKey(Device, db_column='device_id', on_delete=models.PROTECT)
 
     class Meta:
         ordering = ('bug_id',)
 
 
 class Tester_Device(models.Model):
-    tester_id = models.ForeignKey(Tester, db_column='tester_id', on_delete=models.PROTECT)
-    device_id = models.ForeignKey(Device, db_column='device_id', on_delete=models.PROTECT)
+    tester = models.ForeignKey(Tester, db_column='tester_id', on_delete=models.PROTECT)
+    device = models.ForeignKey(Device, db_column='device_id', on_delete=models.PROTECT)
+
+    class Meta:
+        ordering = ('tester', 'device')
 

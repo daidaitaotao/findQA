@@ -1,7 +1,7 @@
 import logging
 
 from django.core.management.base import BaseCommand
-from findQA.ApplicationServices.TesterASerivice import TesterAService
+from findQA.application_services.TesterASerivice import TesterAService
 
 OPTION_ALL = ['ALL']
 """ option select all """

@@ -1,11 +1,6 @@
-import datetime
 import logging
 
-from findQA.models import Country
-from findQA.models import Device
 from findQA.models import Tester
-from findQA.models import Bug
-from findQA.models import Tester_Device
 from django.db.models import Q
 from django.db.models import Count
 
@@ -42,9 +37,9 @@ class TesterDAO(object):
             country__country_code__in=countries)
 
         if devices:
-            result = result.filter(tester_device__device_id__description__in=devices).annotate(
-                experience=Count('bug', filter=Q(bug__device_id__description__in=devices))).order_by(
-                '-experience')
+            result = result.filter(tester_device__device__description__in=devices).annotate(
+                experience=Count('bug', filter=Q(bug__device__description__in=devices), distinct = True)).order_by(
+                '-experience').distinct()
         else:
             result = result.annotate(
                 experience=Count('bug')).order_by('-experience')

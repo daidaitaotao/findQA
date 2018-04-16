@@ -1,5 +1,6 @@
 import logging
-from findQA.DataAccessServices.TesterDAO import TesterDAO
+from findQA.data_access_services.TesterDAO import TesterDAO
+from findQA.data_access_services.TesterSQLDAO import TesterSQLDAO
 
 
 class TesterAService(object):

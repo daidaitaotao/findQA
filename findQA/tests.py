@@ -6,7 +6,7 @@ from findQA.models import Device
 from findQA.models import Tester
 from findQA.models import Bug
 from findQA.models import Tester_Device
-from findQA.ApplicationServices.TesterASerivice import TesterAService
+from findQA.application_services.TesterASerivice import TesterAService
 
 
 class FindQATestCase(TestCase):
@@ -43,7 +43,7 @@ class FindQATestCase(TestCase):
                                        first_name=row['firstName'],
                                        last_name=row['lastName'],
                                        country=country_entity,
-                                       lastLogin=row['lastLogin']
+                                       last_login=row['lastLogin']
                                        )
                 tester_entity.save()
 
@@ -53,8 +53,8 @@ class FindQATestCase(TestCase):
                 tester_entity = Tester.objects.get(tester_id=row['testerId'])
                 device_entity = Device.objects.get(device_id=row['deviceId'])
                 bug_entity = Bug(bug_id=row['bugId'],
-                                 tester_id=tester_entity,
-                                 device_id=device_entity)
+                                 tester=tester_entity,
+                                 device=device_entity)
                 bug_entity.save()
 
         with open(tester_device_file_path) as csvfile:
@@ -63,8 +63,8 @@ class FindQATestCase(TestCase):
                 tester_entity = Tester.objects.get(tester_id=row['testerId'])
                 device_entity = Device.objects.get(device_id=row['deviceId'])
                 tester_device_entity = Tester_Device(
-                    tester_id=tester_entity,
-                    device_id=device_entity)
+                    tester=tester_entity,
+                    device=device_entity)
                 tester_device_entity.save()
 
     def test_all_countries_all_devices(self):
@@ -96,7 +96,8 @@ class FindQATestCase(TestCase):
         selected_testers = TesterAService.get_testers(devices=devices)
 
         tester_id_list = set(i.tester_id for i in selected_testers)
-        all_testers = Tester.objects.filter(bug__device_id__description__in=devices).distinct()
+
+        all_testers = Tester.objects.filter(bug__device__description__in=devices).distinct()
         self.assertEqual(len(selected_testers), len(all_testers))
         self.assertTrue(i.tester_id in tester_id_list for i in all_testers)
 
@@ -111,8 +112,8 @@ class FindQATestCase(TestCase):
         for selected_tester in selected_testers:
             tester_id = selected_tester.tester_id
 
-            expected_count = Bug.objects.filter(tester_id__tester_id=tester_id).filter(
-                device_id__description__in=devices
+            expected_count = Bug.objects.filter(tester__tester_id=tester_id).filter(
+                device__description__in=devices
             ).count()
             self.assertEqual(selected_tester.experience, expected_count)
 
@@ -150,7 +151,7 @@ class FindQATestCase(TestCase):
         devices = ['Pixel 2', 'iPhone 4']
         selected_testers = TesterAService.get_testers(devices=devices)
         tester_id_list = set(i.tester_id for i in selected_testers)
-        all_testers = Tester.objects.filter(bug__device_id__description__in=devices).distinct()
+        all_testers = Tester.objects.filter(bug__device__description__in=devices).distinct()
         self.assertEqual(len(selected_testers), len(all_testers))
         self.assertTrue(i.tester_id in tester_id_list for i in all_testers)
 
